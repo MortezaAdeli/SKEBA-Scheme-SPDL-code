@@ -1,0 +1,94 @@
+usertype Timestamp;
+const  XOR: Function;
+const  Concatenate: Function;
+const  Right: Function;
+const  Left: Function;
+hashfunction H1,H2,H3;
+protocol SKEBA(User,Server,Ptient)
+{
+role User{
+const  IDi ,Gamma;
+var   v,R,W;
+var T1,T2,T3,T4 : Timestamp;
+recv_!T1(User, User, T1);
+recv_1(Server,User, pk(Server));
+macro m=Concatenate( IDi,T1);
+macro Kr= H2(H1(pk(Server)),m);
+macro c={m}pk(Server);
+macro K=Left(Kr);
+macro Key=H3(K,c);
+send_2(User,Server,c);
+recv_3(Server,User, v);
+macro v'=H1(Concatenate(Key,Gamma,T1));
+match(v,v');
+recv_4(Server,User, R,W);
+macro temp=XOR(R,H2(IDi,K));
+macro W'=H1(temp);
+match(W,W');
+macro IDt'=Left(W');
+macro pi=H1(Concatenate(IDt',T1));
+macro SK=H1(Concatenate(IDt',Key,T1));
+send_5(User,Ptient,pi);
+claim(User, Secret, Key);
+claim(User, Secret, SK);
+claim(User, Secret, IDi);
+claim(User, Secret, IDt');
+claim(User, Niagree);
+claim(User, Nisynch);
+claim(User, Alive);
+claim(User, Weakagree);
+}
+role Server {
+const IDi,Gamma;
+fresh  IDt : Nonce;
+var c;
+var T1,T2,T3,T4 : Timestamp;
+recv_!T2( Server, Server, T2);
+send_1(Server,User, pk(Server));
+recv_2(User,Server,c);
+macro m'={c}sk(Server);
+macro c'={m'}pk(Server);
+macro IDi' =Left(m);
+match(IDi,IDi');
+match(c,c');
+macro Kr= H2(H1(pk(Server)),m');
+macro K=Left(Kr);
+macro Key=H3(K,c);
+macro v=H1(Concatenate(Key,Gamma,T1));
+send_3(Server,User,v);
+macro theta =H2(Concatenate(IDi,Key));
+macro R=XOR(Concatenate(IDi,IDt,T2),theta);
+macro W=H1(Concatenate(IDi,IDt,T2));
+send_4(Server,User,R,W);
+send_6(Server,Ptient,IDt,Key);
+claim(Server, Secret, IDi);
+claim(Server, Secret, IDt);
+claim(Server, Secret, K);
+claim(Server, Niagree);
+claim(Server, Nisynch);
+claim(Server, Alive);
+claim(Server, Weakagree);
+}
+role Ptient
+{
+const IDi ;
+var pi,R,IDt,Key;
+var T1,T2,T3: Timestamp;
+recv_!T3( Ptient, Ptient, T3);
+recv_5(User,Ptient,pi);
+recv_6(Server,Ptient,IDt,Key);
+macro pi'=H1(Concatenate(IDt,T3));
+match(pi,pi');
+macro SK=H1(Concatenate(IDt,Key,T3));
+claim(Ptient, Secret, SK);
+claim(Ptient, Secret, IDt);
+claim(Ptient, Secret, Key);
+claim(Ptient, Niagree);
+claim(Ptient, Nisynch);
+claim(Ptient, Alive);
+claim(Ptient, Weakagree);
+}
+}
+
+
+
